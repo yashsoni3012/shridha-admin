@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useLogin } from "../../hooks/useAuth";
 import login_img from "../../assets/login_img.png";
-import logo_img from "../../assets/logo_img.png";
+import black_logo_img from "../../assets/black_logo_img.png";
 
 export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
@@ -23,7 +23,7 @@ export default function LoginPage() {
 
   return (
     <>
-      {/* Custom keyframes – keep the animations */}
+      {/* Custom keyframes – keep animations */}
       <style>{`
         @keyframes floatIn {
           from { opacity: 0; transform: translateY(22px); }
@@ -47,7 +47,7 @@ export default function LoginPage() {
         }
       `}</style>
 
-      {/* Main container with background image and overlay */}
+      {/* Main container with background image and subtle overlay */}
       <div
         className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
         style={{
@@ -56,42 +56,43 @@ export default function LoginPage() {
           backgroundPosition: "center",
         }}
       >
-        {/* Dark overlay with gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-black/80" />
+        {/* Light transparent overlay – lets background image be visible */}
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
 
-        {/* Subtle radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,121,42,0.15)_0%,_transparent_70%)]" />
+        {/* Subtle radial glow (optional, keeps a bit of warmth) */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,121,42,0.1)_0%,_transparent_70%)]" />
 
-        {/* Login card – glassmorphism */}
+        {/* Login card – white background with black text, shadow, and animations */}
         <div
-          className="relative w-full max-w-md rounded-3xl p-8 backdrop-blur-xl bg-white/5 border border-white/10 shadow-2xl animate-floatIn"
+          className="relative w-full max-w-md rounded-3xl p-8 bg-white/95 backdrop-blur-sm border border-white/20 shadow-2xl shadow-black/20 animate-floatIn"
           style={{ animationDelay: "0.1s" }}
         >
           {/* Logo and brand */}
           <div className="flex items-center gap-3 mb-8">
-            <img src={logo_img} alt="Shridha" className="h-10 object-cover" />
+            <img src={black_logo_img} alt="Shridha" className="h-14 object-contain" />
+            {/* Optional: brand name next to logo */}
           </div>
 
-          {/* Heading */}
+          {/* Heading with black text */}
           <div className="mb-6">
-            <h1 className="font-serif text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="font-serif text-4xl font-extrabold text-gray-900 tracking-tight">
               Welcome back
             </h1>
-            <p className="text-white/40 text-sm mt-1">
+            <p className="text-gray-500 text-sm mt-1">
               Sign in to access your admin panel.
             </p>
           </div>
 
-          {/* Demo credentials box */}
-          <div className="mb-6 p-4 bg-[#d4792a]/10 border border-[#d4792a]/20 rounded-xl flex gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#d4792a]/20 flex items-center justify-center text-lg">
+          {/* Demo credentials box – light version */}
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex gap-3">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-lg text-amber-700">
               🔑
             </div>
             <div>
-              <p className="font-mono text-[10px] text-[#d4792a]/60 uppercase tracking-widest">
+              <p className="font-mono text-[10px] text-amber-700 uppercase tracking-widest">
                 Demo Credentials
               </p>
-              <p className="font-mono text-sm text-[#eab97d] leading-relaxed">
+              <p className="font-mono text-sm text-amber-800 leading-relaxed">
                 admin@shridha.com
                 <br />
                 admin123
@@ -99,21 +100,21 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Form */}
+          {/* Form – inputs with light background and dark text */}
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {/* Email */}
             <div className="mb-4">
-              <label className="block font-mono text-[10px] text-white/40 uppercase tracking-widest mb-2">
+              <label className="block font-mono text-[10px] text-gray-500 uppercase tracking-widest mb-2">
                 Email Address
               </label>
               <input
                 type="email"
                 placeholder="you@example.com"
                 autoComplete="email"
-                className={`w-full px-4 py-3 bg-white/5 border rounded-xl text-white placeholder-white/20 outline-none transition-all duration-200 font-sans ${
+                className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 outline-none transition-all duration-200 font-sans ${
                   errors.email
-                    ? "border-red-500/50 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
-                    : "border-white/10 hover:border-white/20 focus:border-[#d4792a]/60 focus:ring-4 focus:ring-[#d4792a]/10"
+                    ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                    : "border-gray-200 hover:border-gray-300 focus:border-[#d4792a] focus:ring-4 focus:ring-amber-100"
                 }`}
                 {...register("email", {
                   required: "Email is required",
@@ -124,7 +125,7 @@ export default function LoginPage() {
                 })}
               />
               {errors.email && (
-                <p className="text-red-400 text-xs font-sans mt-1">
+                <p className="text-red-600 text-xs font-sans mt-1">
                   ⚠ {errors.email.message}
                 </p>
               )}
@@ -133,25 +134,19 @@ export default function LoginPage() {
             {/* Password */}
             <div className="mb-2">
               <div className="flex justify-between items-center mb-2">
-                <label className="font-mono text-[10px] text-white/40 uppercase tracking-widest">
+                <label className="font-mono text-[10px] text-gray-500 uppercase tracking-widest">
                   Password
                 </label>
-                <button
-                  type="button"
-                  className="text-[#d4792a] text-xs font-sans hover:underline"
-                >
-                  Forgot?
-                </button>
               </div>
               <div className="relative">
                 <input
                   type={showPass ? "text" : "password"}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className={`w-full px-4 py-3 pr-12 bg-white/5 border rounded-xl text-white placeholder-white/20 outline-none transition-all duration-200 font-sans ${
+                  className={`w-full px-4 py-3 pr-12 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 outline-none transition-all duration-200 font-sans ${
                     errors.password
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
-                      : "border-white/10 hover:border-white/20 focus:border-[#d4792a]/60 focus:ring-4 focus:ring-[#d4792a]/10"
+                      ? "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100"
+                      : "border-gray-200 hover:border-gray-300 focus:border-[#d4792a] focus:ring-4 focus:ring-amber-100"
                   }`}
                   {...register("password", {
                     required: "Password is required",
@@ -161,13 +156,13 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/50"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-xs font-sans mt-1">
+                <p className="text-red-600 text-xs font-sans mt-1">
                   ⚠ {errors.password.message}
                 </p>
               )}
@@ -195,7 +190,7 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-white/20 text-xs font-mono tracking-wide">
+          <p className="mt-8 text-center text-gray-400 text-xs font-mono tracking-wide">
             © {new Date().getFullYear()} Shridha. All rights reserved.
           </p>
         </div>

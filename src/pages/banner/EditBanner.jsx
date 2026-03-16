@@ -114,7 +114,7 @@ const EditBanner = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Banner</h2>
 
         {error && (
@@ -222,15 +222,7 @@ const EditBanner = () => {
           </div>
         </form>
 
-        {/* Debug Info */}
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm">
-          <p className="font-semibold">📌 Note:</p>
-          <ul className="list-disc list-inside text-yellow-800">
-            <li>Only selected new images are sent (PATCH).</li>
-            <li>If you don't select new images, existing ones remain unchanged.</li>
-            <li>Check browser Network tab if update fails.</li>
-          </ul>
-        </div>
+        
       </div>
     </div>
   );

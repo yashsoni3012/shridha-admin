@@ -117,7 +117,7 @@ const EditCategory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Edit Category</h2>
 
         {error && (
@@ -203,15 +203,7 @@ const EditCategory = () => {
           </div>
         </form>
 
-        {/* Debug Info */}
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm">
-          <p className="font-semibold">📌 Note:</p>
-          <ul className="list-disc list-inside text-yellow-800">
-            <li>The image field name used is <code>imageUrl</code> – if your API expects something else (e.g., <code>image</code>), change it in <code>formData.append('imageUrl', image)</code>.</li>
-            <li>Only changed fields are sent (PATCH).</li>
-            <li>Check browser Network tab if update fails.</li>
-          </ul>
-        </div>
+       
       </div>
     </div>
   );

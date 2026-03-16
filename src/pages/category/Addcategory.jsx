@@ -82,7 +82,7 @@ const AddCategory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Category</h2>
 
         {error && (
@@ -152,14 +152,7 @@ const AddCategory = () => {
           </div>
         </form>
 
-        {/* Debug hint */}
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm">
-          <p className="font-semibold">📌 Note:</p>
-          <ul className="list-disc list-inside text-yellow-800">
-            <li>The image field name used is <code>imageUrl</code> – if your API expects <code>image</code>, change it in <code>formData.append('imageUrl', image)</code>.</li>
-            <li>Check browser Network tab if submission fails to see exact error.</li>
-          </ul>
-        </div>
+        
       </div>
     </div>
   );

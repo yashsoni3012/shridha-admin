@@ -10,6 +10,9 @@ import EditBanner from './pages/banner/EditBanner'
 import Category from './pages/category/Category'
 import AddCategory from './pages/category/Addcategory'
 import EditCategory from './pages/category/EditCategory'
+import Products from './pages/products/Products'
+import AddProduct from './pages/products/AddProduct'
+import EditProduct from './pages/products/EditProduct'
 
 function PrivateRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -58,16 +61,21 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UsersPage />} />
 
-          {/* Banner */}
-          <Route path="/banner" element={<Banner />} />
+          {/* Banners */}
+          <Route path="/banners" element={<Banner />} />
           <Route path="/add-banner" element={<AddBanner />} />
           <Route path="/edit-banner/:id" element={<EditBanner />} />
 
 
-          {/* Category */}
-          <Route path="/category" element={<Category />} />
+          {/* Categories */}
+          <Route path="/categories" element={<Category />} />
           <Route path="/add-category" element={<AddCategory />} />
           <Route path="/edit-category/:id" element={<EditCategory />} />
+
+          {/* Products */}
+          <Route path="/products" element={<Products />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/edit-product/:id" element={<EditProduct />} />
         </Route>
 
         {/* Fallback */}

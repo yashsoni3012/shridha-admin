@@ -300,6 +300,7 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "📊", path: "/dashboard" },
     { name: "Banners", icon: "📈", path: "/banner" },
     { name: "Users", icon: "📈", path: "/users" },
+    { name: "Categories", icon: "📈", path: "/category" },
   ];
 
   const toggleSidebar = () => setIsOpen(!isOpen);

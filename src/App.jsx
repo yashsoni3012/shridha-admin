@@ -4,7 +4,9 @@ import AdminLayout from './components/layout/AdminLayout'
 import LoginPage from './pages/auth/LoginPage'
 import Dashboard from './pages/dashboard/Dashboard'
 import UsersPage from './pages/users/UsersPage'
-import SettingsPage from './pages/settings/SettingsPage'
+import Banner from './pages/banner/Banner'
+import AddBanner from './pages/banner/AddBanner'
+import EditBanner from './pages/banner/EditBanner'
 
 function PrivateRoute({ children }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -52,7 +54,11 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="/users" element={<UsersPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+
+
+          <Route path="/banner" element={<Banner />} />
+          <Route path="/add-banner" element={<AddBanner />} />
+          <Route path="/edit-banner/:id" element={<EditBanner />} />
         </Route>
 
         {/* Fallback */}

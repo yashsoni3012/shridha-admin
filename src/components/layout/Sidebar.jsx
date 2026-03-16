@@ -298,8 +298,8 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Dashboard", icon: "📊", path: "/dashboard" },
+    { name: "Banners", icon: "📈", path: "/banner" },
     { name: "Users", icon: "📈", path: "/users" },
-    { name: "Settings", icon: "⚙️", path: "/settings" },
   ];
 
   const toggleSidebar = () => setIsOpen(!isOpen);

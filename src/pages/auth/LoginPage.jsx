@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Eye,
-  EyeOff,
-  Loader2,
-  ArrowRight,
-  Sparkles,
-} from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowRight, Sparkles } from "lucide-react";
 import { useLogin } from "../../hooks/useAuth";
 import login_img from "../../assets/login_img.png";
 import black_logo_img from "../../assets/black_logo_img.png";
@@ -68,19 +62,21 @@ export default function LoginPage() {
           style={{ animationDelay: "0.1s" }}
         >
           {/* Logo and brand */}
-          <div className="flex items-center gap-3 mb-8">
-            <img src={black_logo_img} alt="Shridha" className="h-14 object-contain" />
-            {/* Optional: brand name next to logo */}
-          </div>
-
-          {/* Heading with black text */}
-          <div className="mb-6">
-            <h1 className="font-serif text-4xl font-extrabold text-gray-900 tracking-tight">
-              Welcome back
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Sign in to access your admin panel.
-            </p>
+          <div className="flex flex-col items-center mb-8">
+            <img
+              src={black_logo_img}
+              alt="Shridha"
+              className="h-14 object-contain mb-2"
+            />
+            {/* Heading with black text */}
+            <div className="mb-0 flex flex-col items-center">
+              <h1 className="font-serif text-4xl font-extrabold text-gray-900 tracking-tight">
+                Welcome back
+              </h1>
+              <p className="text-gray-500 text-sm mt-1">
+                Sign in to access your admin panel.
+              </p>
+            </div>
           </div>
 
           {/* Demo credentials box – light version */}
@@ -126,7 +122,7 @@ export default function LoginPage() {
               />
               {errors.email && (
                 <p className="text-red-600 text-xs font-sans mt-1">
-                  ⚠ {errors.email.message}
+                   {errors.email.message}
                 </p>
               )}
             </div>
@@ -163,7 +159,7 @@ export default function LoginPage() {
               </div>
               {errors.password && (
                 <p className="text-red-600 text-xs font-sans mt-1">
-                  ⚠ {errors.password.message}
+                   {errors.password.message}
                 </p>
               )}
             </div>
@@ -190,9 +186,9 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <p className="mt-8 text-center text-gray-400 text-xs font-mono tracking-wide">
+          {/* <p className="mt-8 text-center text-gray-400 text-xs font-mono tracking-wide">
             © {new Date().getFullYear()} Shridha. All rights reserved.
-          </p>
+          </p> */}
         </div>
       </div>
     </>

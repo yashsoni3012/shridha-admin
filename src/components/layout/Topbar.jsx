@@ -194,7 +194,9 @@ export default function Topbar() {
     const path = location.pathname;
     if (path.includes('/dashboard')) return 'Dashboard';
     if (path.includes('/users')) return 'Users';
-    if (path.includes('/settings')) return 'Settings';
+    if (path.includes('/banners')) return 'Banners';
+    if (path.includes('/products')) return 'Products';
+    if (path.includes('/categories')) return 'Categories';
     return 'Dashboard'; // fallback
   };
 

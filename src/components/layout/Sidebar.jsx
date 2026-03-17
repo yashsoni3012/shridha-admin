@@ -24,6 +24,7 @@ const Sidebar = () => {
     { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
     { name: "Banners", icon: Image, path: "/banners" },
     { name: "Products", icon: Package, path: "/products" },
+    // { name: "category", icon: Users, path: "/categories" },
     { name: "Users", icon: Users, path: "/users" },
   ];
 

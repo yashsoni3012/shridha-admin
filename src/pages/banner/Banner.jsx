@@ -127,7 +127,7 @@ const BannerList = () => {
           style={{
             position: "fixed", inset: 0, zIndex: 1000,
             background: "rgba(0,0,0,0.45)",
-            backdropFilter: "blur(7px)",
+            backdropFilter: "blur(5px)",
             WebkitBackdropFilter: "blur(7px)",
             display: "flex", alignItems: "center", justifyContent: "center",
             padding: 16,

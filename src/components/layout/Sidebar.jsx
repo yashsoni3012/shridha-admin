@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react"; // Import logout icon
+import { LogOut, LayoutDashboard, Image, Package, Users } from "lucide-react";
 import { useAuthStore } from "../../store/authStore";
 import logo from "../../assets/logo_img.png";
 
@@ -21,11 +21,10 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { name: "Dashboard", icon: "📊", path: "/dashboard" },
-    { name: "Banners", icon: "📈", path: "/banners" },
-    { name: "Products", icon: "📈", path: "/products" },
-    // { name: "Categories", icon: "📈", path: "/categories" },
-    { name: "Users", icon: "📈", path: "/users" },
+    { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+    { name: "Banners", icon: Image, path: "/banners" },
+    { name: "Products", icon: Package, path: "/products" },
+    { name: "Users", icon: Users, path: "/users" },
   ];
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -124,7 +123,7 @@ const Sidebar = () => {
                 }
               }}
             >
-              <span className="text-xl">{item.icon}</span>
+              <item.icon size={20} />
               <span className="font-medium">{item.name}</span>
             </NavLink>
           ))}

@@ -515,7 +515,6 @@ const EditProduct = () => {
                       </div>
                     ))}
                   </div>
-                  <p style={fieldDesc}>Click × to delete · Click ↺ to replace an existing image</p>
                 </div>
               )}
 

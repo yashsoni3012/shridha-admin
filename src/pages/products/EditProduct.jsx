@@ -44,7 +44,7 @@ const EditProduct = () => {
 
   const [formData, setFormData] = useState({
     name: "", price: "", discountPercentage: "",
-    category: "", specification: "", description: "",
+    category: "", specifications: [], descriptions: [],
   });
 
   const [selectedColors, setSelectedColors] = useState([]);
@@ -84,6 +84,14 @@ const EditProduct = () => {
     return "";
   };
 
+  // Parse array fields (specifications, descriptions) – they might be arrays or strings
+  const parseArrayField = (field) => {
+    if (!field) return [];
+    if (Array.isArray(field)) return field;
+    if (typeof field === "string") return field.split("\n").filter(s => s.trim() !== "");
+    return [];
+  };
+
   // Fetch product
   useEffect(() => {
     const fetchProduct = async () => {
@@ -100,8 +108,8 @@ const EditProduct = () => {
             price: product.price || "",
             discountPercentage: product.discountPercentage || "",
             category: getCategoryId(product.category),
-            specification: product.specification || "",
-            description: product.description || "",
+            specifications: parseArrayField(product.specification || product.specifications),
+            descriptions: parseArrayField(product.description || product.descriptions),
           });
           setSelectedColors(parseCommaString(product.colors));
           setSelectedSizes(parseCommaString(product.sizes).map((s) => s.toUpperCase()));
@@ -121,6 +129,52 @@ const EditProduct = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Specifications handlers
+  const handleSpecChange = (index, value) => {
+    setFormData(prev => {
+      const newSpecs = [...prev.specifications];
+      newSpecs[index] = value;
+      return { ...prev, specifications: newSpecs };
+    });
+  };
+
+  const addSpecification = () => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: [...prev.specifications, ""]
+    }));
+  };
+
+  const removeSpecification = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: prev.specifications.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Descriptions handlers
+  const handleDescChange = (index, value) => {
+    setFormData(prev => {
+      const newDescs = [...prev.descriptions];
+      newDescs[index] = value;
+      return { ...prev, descriptions: newDescs };
+    });
+  };
+
+  const addDescription = () => {
+    setFormData(prev => ({
+      ...prev,
+      descriptions: [...prev.descriptions, ""]
+    }));
+  };
+
+  const removeDescription = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      descriptions: prev.descriptions.filter((_, i) => i !== index)
+    }));
   };
 
   const handleColorToggle = (color) =>
@@ -173,10 +227,20 @@ const EditProduct = () => {
       formData.name !== original.name ||
       formData.price !== original.price ||
       formData.discountPercentage !== original.discountPercentage ||
-      formData.category !== getCategoryId(original.category) ||
-      formData.specification !== original.specification ||
-      formData.description !== original.description
+      formData.category !== getCategoryId(original.category)
     );
+  };
+
+  const specificationsChanged = () => {
+    if (!original) return false;
+    const originalSpecs = parseArrayField(original.specification || original.specifications);
+    return !arraysEqual(formData.specifications.filter(s => s.trim() !== ""), originalSpecs.filter(s => s.trim() !== ""));
+  };
+
+  const descriptionsChanged = () => {
+    if (!original) return false;
+    const originalDescs = parseArrayField(original.description || original.descriptions);
+    return !arraysEqual(formData.descriptions.filter(d => d.trim() !== ""), originalDescs.filter(d => d.trim() !== ""));
   };
 
   const colorsChanged = () => {
@@ -194,16 +258,40 @@ const EditProduct = () => {
     setError(""); setSuccess("");
 
     const submitData = new FormData();
+
+    // Text fields
     if (textFieldsChanged()) {
       submitData.append("name", formData.name);
       submitData.append("price", formData.price);
       if (formData.discountPercentage) submitData.append("discountPercentage", formData.discountPercentage);
       submitData.append("category", formData.category);
-      submitData.append("specification", formData.specification);
-      submitData.append("description", formData.description);
     }
-    if (colorsChanged()) selectedColors.forEach((color) => submitData.append("colors", color));
-    if (sizesChanged()) selectedSizes.forEach((size) => submitData.append("sizes", size.toLowerCase()));
+
+    // Specifications (multiple)
+    if (specificationsChanged()) {
+      formData.specifications.forEach(spec => {
+        if (spec.trim()) submitData.append("specification", spec.trim());
+      });
+    }
+
+    // Descriptions (multiple)
+    if (descriptionsChanged()) {
+      formData.descriptions.forEach(desc => {
+        if (desc.trim()) submitData.append("description", desc.trim());
+      });
+    }
+
+    // Colors
+    if (colorsChanged()) {
+      selectedColors.forEach((color) => submitData.append("colors", color));
+    }
+
+    // Sizes
+    if (sizesChanged()) {
+      selectedSizes.forEach((size) => submitData.append("sizes", size.toLowerCase()));
+    }
+
+    // Image changes
     imagesToDelete.forEach((url) => submitData.append("deleteImages", url));
     Object.entries(replaceMap).forEach(([index, file]) => {
       submitData.append("images", file);
@@ -213,6 +301,8 @@ const EditProduct = () => {
       newImages.forEach((file) => submitData.append("images", file));
       submitData.append("addImages", "true");
     }
+
+    // Check if any change
     if (submitData.entries().next().done) { setError("No changes detected."); return; }
 
     setSubmitting(true);
@@ -426,32 +516,100 @@ const EditProduct = () => {
                 </div>
               </div>
 
-              {/* ── Specification ── */}
+              {/* ── Specifications (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Specification</label>
-                <textarea
-                  name="specification" value={formData.specification}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder="Enter product specifications…"
-                  style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, ...focusStyle("specification") }}
-                  onFocus={() => setFocusedField("specification")}
-                  onBlur={() => setFocusedField("")}
-                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={labelStyle}>Specifications</label>
+                  <button
+                    type="button"
+                    onClick={addSpecification}
+                    style={{
+                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
+                      border: "1.5px solid #1a1a1a", borderRadius: 6,
+                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: 4,
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add
+                  </button>
+                </div>
+                {formData.specifications.map((spec, index) => (
+                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <input
+                      type="text"
+                      value={spec}
+                      onChange={(e) => handleSpecChange(index, e.target.value)}
+                      placeholder={`Specification #${index + 1}`}
+                      style={{ ...inputStyle, flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSpecification(index)}
+                      style={{
+                        width: 36, height: 36, borderRadius: 8,
+                        border: "1.5px solid #e5e7eb", background: "#fff",
+                        color: "#ef4444", fontSize: 18, fontWeight: 600,
+                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {formData.specifications.length === 0 && (
+                  <p style={fieldDesc}>No specifications added. Click "Add" to create one.</p>
+                )}
               </div>
 
-              {/* ── Description ── */}
+              {/* ── Descriptions (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Description</label>
-                <textarea
-                  name="description" value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder="Enter product description…"
-                  style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, ...focusStyle("description") }}
-                  onFocus={() => setFocusedField("description")}
-                  onBlur={() => setFocusedField("")}
-                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={labelStyle}>Descriptions</label>
+                  <button
+                    type="button"
+                    onClick={addDescription}
+                    style={{
+                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
+                      border: "1.5px solid #1a1a1a", borderRadius: 6,
+                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: 4,
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add
+                  </button>
+                </div>
+                {formData.descriptions.map((desc, index) => (
+                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <textarea
+                      value={desc}
+                      onChange={(e) => handleDescChange(index, e.target.value)}
+                      placeholder={`Description #${index + 1}`}
+                      rows={2}
+                      style={{ ...inputStyle, flex: 1, resize: "vertical" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeDescription(index)}
+                      style={{
+                        width: 36, height: 36, borderRadius: 8,
+                        border: "1.5px solid #e5e7eb", background: "#fff",
+                        color: "#ef4444", fontSize: 18, fontWeight: 600,
+                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {formData.descriptions.length === 0 && (
+                  <p style={fieldDesc}>No descriptions added. Click "Add" to create one.</p>
+                )}
               </div>
 
               {/* ── Existing Images ── */}

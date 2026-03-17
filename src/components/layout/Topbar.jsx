@@ -304,23 +304,7 @@ export default function Topbar() {
                   gap: 3,
                 }}
               >
-                {['⌘', 'K'].map((k) => (
-                  <span
-                    key={k}
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: 10,
-                      color: '#cbd5e1',
-                      background: '#f1f5f9',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: 5,
-                      padding: '1px 5px',
-                      lineHeight: '16px',
-                    }}
-                  >
-                    {k}
-                  </span>
-                ))}
+               
               </div>
             )}
           </div>

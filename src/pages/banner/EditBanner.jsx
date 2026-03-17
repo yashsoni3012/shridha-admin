@@ -94,14 +94,14 @@ const EditBanner = () => {
   // ── Upload field with current image preview ──
   const UploadField = ({ label, fieldKey, file, existingUrl, onChange }) => (
     <div style={{ marginBottom: 20 }}>
-      <label style={{ display: 'block', marginBottom: 6, fontSize: 13.5, fontWeight: 600, color: '#374151' }}>
+      <label style={{ display: 'block', marginBottom: 6, fontSize: 15, fontWeight: 600, color: '#374151' }}>
         {label}
       </label>
 
       {/* Current image preview */}
       {existingUrl && (
         <div style={{ marginBottom: 8 }}>
-          <p style={{ margin: '0 0 5px', fontSize: 12, color: '#9ca3af', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+          <p style={{ margin: '0 0 5px', fontSize: 13, color: '#9ca3af', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.4px' }}>
             Current
           </p>
           <img
@@ -141,10 +141,10 @@ const EditBanner = () => {
           <UploadIcon />
         </span>
         <div style={{ flex: 1, overflow: 'hidden' }}>
-          <p style={{ margin: 0, fontSize: 13.5, color: file ? '#1a1a1a' : '#6b7280', fontWeight: file ? 500 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <p style={{ margin: 0, fontSize: 15, color: file ? '#1a1a1a' : '#6b7280', fontWeight: file ? 500 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {file ? file.name : `Click to replace ${fieldKey === 'desktop' ? 'desktop' : 'mobile'} image (optional)`}
           </p>
-          {!file && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#9ca3af' }}>PNG, JPG, WEBP up to 10MB</p>}
+          {!file && <p style={{ margin: '2px 0 0', fontSize: 13, color: '#9ca3af' }}>PNG, JPG, WEBP up to 10MB</p>}
         </div>
         {file && (
           <span style={{
@@ -217,7 +217,7 @@ const EditBanner = () => {
             </svg>
           </button>
 
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#1a1f2e', letterSpacing: '-0.2px' }}>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1f2e', letterSpacing: '-0.2px' }}>
             Edit Banner
           </h2>
         </div>
@@ -293,7 +293,7 @@ const EditBanner = () => {
               borderRadius: 8,
               background: '#fff',
               color: '#6b7280',
-              fontSize: 13.5,
+              fontSize: 15,
               fontWeight: 600,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -316,7 +316,7 @@ const EditBanner = () => {
               borderRadius: 8,
               background: submitting ? '#555' : '#1a1a1a',
               color: '#fff',
-              fontSize: 13.5,
+              fontSize: 15,
               fontWeight: 600,
               cursor: submitting ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit',

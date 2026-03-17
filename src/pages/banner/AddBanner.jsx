@@ -71,7 +71,7 @@ const AddBanner = () => {
 
   const UploadField = ({ label, fieldKey, file }) => (
     <div style={{ marginBottom: 20 }}>
-      <label style={{ display: 'block', marginBottom: 6, fontSize: 13.5, fontWeight: 600, color: '#374151' }}>
+      <label style={{ display: 'block', marginBottom: 6, fontSize: 15, fontWeight: 600, color: '#374151' }}>
         {label} <span style={{ color: '#ef4444' }}>*</span>
       </label>
 
@@ -95,7 +95,7 @@ const AddBanner = () => {
           <p style={{ margin: 0, fontSize: 13.5, color: file ? '#1a1a1a' : '#6b7280', fontWeight: file ? 500 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {file ? file.name : `Click to upload ${fieldKey === 'desktop' ? 'desktop' : 'mobile'} image`}
           </p>
-          {!file && <p style={{ margin: '2px 0 0', fontSize: 12, color: '#9ca3af' }}>PNG, JPG, WEBP up to 10MB</p>}
+          {!file && <p style={{ margin: '2px 0 0', fontSize: 13, color: '#9ca3af' }}>PNG, JPG, WEBP up to 10MB</p>}
         </div>
         {file && (
           <span style={{
@@ -150,7 +150,7 @@ const AddBanner = () => {
             </svg>
           </button>
 
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: '#1a1f2e', letterSpacing: '-0.2px' }}>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#1a1f2e', letterSpacing: '-0.2px' }}>
             Add New Banner
           </h2>
         </div>
@@ -213,7 +213,7 @@ const AddBanner = () => {
               borderRadius: 8,
               background: '#fff',
               color: '#6b7280',
-              fontSize: 13.5,
+              fontSize: 15,
               fontWeight: 600,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -236,7 +236,7 @@ const AddBanner = () => {
               borderRadius: 8,
               background: loading ? '#555' : '#1a1a1a',
               color: '#fff',
-              fontSize: 13.5,
+              fontSize: 15,
               fontWeight: 600,
               cursor: loading ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit',

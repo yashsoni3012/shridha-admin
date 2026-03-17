@@ -15,20 +15,20 @@ const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
 // ── Shared style helpers ──
 const labelStyle = {
   display: "block", marginBottom: 6,
-  fontSize: 13.5, fontWeight: 600, color: "#374151",
+  fontSize: 15, fontWeight: 600, color: "#374151",
 };
 
 const inputStyle = {
   width: "100%", boxSizing: "border-box",
   border: "1.5px solid #e5e7eb", borderRadius: 10,
-  padding: "10px 14px", fontSize: 13.5,
+  padding: "10px 14px", fontSize: 15,
   color: "#374151", background: "#fafafa",
   outline: "none", fontFamily: "inherit",
   transition: "border-color .15s, background .15s",
 };
 
 const fieldDesc = {
-  margin: "5px 0 0", fontSize: 12.5, color: "#9ca3af",
+  margin: "5px 0 0", fontSize: 14.5, color: "#9ca3af",
 };
 
 const AddProduct = () => {
@@ -231,7 +231,7 @@ const AddProduct = () => {
               <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
             </svg>
           </button>
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#1a1f2e", letterSpacing: "-0.2px" }}>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#1a1f2e", letterSpacing: "-0.2px" }}>
             Add New Product
           </h2>
         </div>
@@ -242,7 +242,7 @@ const AddProduct = () => {
 
           {/* Alerts */}
           {error && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#fff5f5", border: "1px solid #fecaca", color: "#c0392b", fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#fff5f5", border: "1px solid #fecaca", color: "#c0392b", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
@@ -250,7 +250,7 @@ const AddProduct = () => {
             </div>
           )}
           {success && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
               <CheckIcon /> {success}
             </div>
           )}
@@ -328,7 +328,7 @@ const AddProduct = () => {
                           type="button"
                           onClick={() => handleColorToggle(color)}
                           style={{
-                            padding: "5px 14px", borderRadius: 8, fontSize: 13, fontWeight: 500,
+                            padding: "5px 14px", borderRadius: 8, fontSize: 14, fontWeight: 500,
                             cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
                             background: active ? "#1a1a1a" : "#fff",
@@ -361,7 +361,7 @@ const AddProduct = () => {
                           type="button"
                           onClick={() => handleSizeToggle(size)}
                           style={{
-                            width: 52, height: 40, borderRadius: 8, fontSize: 13, fontWeight: 700,
+                            width: 52, height: 40, borderRadius: 8, fontSize: 14, fontWeight: 700,
                             cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
                             background: active ? "#1a1a1a" : "#fff",
@@ -482,7 +482,7 @@ const AddProduct = () => {
               <div style={{ marginBottom: 4 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                   <label style={labelStyle}>Product Images <span style={{ color: "#ef4444" }}>*</span></label>
-                  <span style={{ fontSize: 12.5, color: "#9ca3af" }}>{imageFiles.length}/5</span>
+                  <span style={{ fontSize: 14.5, color: "#9ca3af" }}>{imageFiles.length}/5</span>
                 </div>
 
                 {/* Upload zone */}
@@ -500,7 +500,7 @@ const AddProduct = () => {
                     <path d="M9 12l3-3 3 3" /><line x1="12" y1="9" x2="12" y2="16" />
                   </svg>
                   <div style={{ flex: 1 }}>
-                    <p style={{ margin: 0, fontSize: 13.5, color: imageFiles.length >= 5 ? "#9ca3af" : "#6b7280" }}>
+                    <p style={{ margin: 0, fontSize: 15, color: imageFiles.length >= 5 ? "#9ca3af" : "#6b7280" }}>
                       {imageFiles.length >= 5 ? "Maximum 5 images reached" : "Click to add images (max 5)"}
                     </p>
                     <p style={{ margin: "2px 0 0", fontSize: 12, color: "#9ca3af" }}>PNG, JPG, WEBP</p>
@@ -554,7 +554,7 @@ const AddProduct = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            style={{ padding: "9px 22px", border: "1.5px solid #e5e7eb", borderRadius: 8, background: "#fff", color: "#6b7280", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }}
+            style={{ padding: "9px 22px", border: "1.5px solid #e5e7eb", borderRadius: 8, background: "#fff", color: "#6b7280", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "#f9fafb"; e.currentTarget.style.borderColor = "#d1d5db"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#e5e7eb"; }}
           >
@@ -567,7 +567,7 @@ const AddProduct = () => {
             style={{
               padding: "9px 26px", border: "none", borderRadius: 8,
               background: loading ? "#555" : "#1a1a1a", color: "#fff",
-              fontSize: 13.5, fontWeight: 600,
+              fontSize: 15, fontWeight: 600,
               cursor: loading ? "not-allowed" : "pointer",
               fontFamily: "inherit", transition: "background .15s",
               display: "flex", alignItems: "center", gap: 8,

@@ -15,13 +15,13 @@ const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 // ── Shared style helpers ──
 const labelStyle = {
   display: "block", marginBottom: 6,
-  fontSize: 13.5, fontWeight: 600, color: "#374151",
+  fontSize: 15, fontWeight: 600, color: "#374151",
 };
 
 const inputStyle = {
   width: "100%", boxSizing: "border-box",
   border: "1.5px solid #e5e7eb", borderRadius: 10,
-  padding: "10px 14px", fontSize: 13.5,
+  padding: "10px 14px", fontSize: 15,
   color: "#374151", background: "#fafafa",
   outline: "none", fontFamily: "inherit",
   transition: "border-color .15s, background .15s",
@@ -287,7 +287,7 @@ const EditProduct = () => {
 
           {/* Alerts */}
           {error && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#fff5f5", border: "1px solid #fecaca", color: "#c0392b", fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#fff5f5", border: "1px solid #fecaca", color: "#c0392b", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
@@ -295,7 +295,7 @@ const EditProduct = () => {
             </div>
           )}
           {success && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", fontSize: 13, display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
               <CheckIcon /> {success}
             </div>
           )}
@@ -372,7 +372,7 @@ const EditProduct = () => {
                           key={color} type="button"
                           onClick={() => handleColorToggle(color)}
                           style={{
-                            padding: "5px 14px", borderRadius: 8, fontSize: 13, fontWeight: 500,
+                            padding: "5px 14px", borderRadius: 8, fontSize: 14, fontWeight: 500,
                             cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
                             background: active ? "#1a1a1a" : "#fff",
@@ -405,7 +405,7 @@ const EditProduct = () => {
                           onClick={() => handleSizeToggle(size)}
                           style={{
                             minWidth: 52, height: 40, padding: "0 10px", borderRadius: 8,
-                            fontSize: 13, fontWeight: 700, cursor: "pointer",
+                            fontSize: 14, fontWeight: 700, cursor: "pointer",
                             fontFamily: "inherit", transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
                             background: active ? "#1a1a1a" : "#fff",
@@ -507,7 +507,7 @@ const EditProduct = () => {
                             type="button"
                             title="Delete image"
                             onClick={() => markImageForDeletion(idx)}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", cursor: "pointer", color: "#fff", fontSize: 13, fontWeight: 700, lineHeight: 1 }}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", cursor: "pointer", color: "#fff", fontSize: 14, fontWeight: 700, lineHeight: 1 }}
                           >
                             ×
                           </button>
@@ -540,7 +540,7 @@ const EditProduct = () => {
                     <path d="M9 12l3-3 3 3" /><line x1="12" y1="9" x2="12" y2="16" />
                   </svg>
                   <div style={{ flex: 1 }}>
-                    <p style={{ margin: 0, fontSize: 13.5, color: totalImages >= 5 ? "#9ca3af" : "#6b7280" }}>
+                    <p style={{ margin: 0, fontSize: 15, color: totalImages >= 5 ? "#9ca3af" : "#6b7280" }}>
                       {totalImages >= 5 ? "Maximum 5 images reached" : "Click to add more images"}
                     </p>
                     <p style={{ margin: "2px 0 0", fontSize: 12, color: "#9ca3af" }}>PNG, JPG, WEBP</p>
@@ -569,7 +569,7 @@ const EditProduct = () => {
                         <button
                           type="button"
                           onClick={() => removeNewImage(idx)}
-                          style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", color: "#fff", fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", lineHeight: 1 }}
+                          style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", color: "#fff", fontSize: 14, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", lineHeight: 1 }}
                         >
                           ×
                         </button>
@@ -589,7 +589,7 @@ const EditProduct = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            style={{ padding: "9px 22px", border: "1.5px solid #e5e7eb", borderRadius: 8, background: "#fff", color: "#6b7280", fontSize: 13.5, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }}
+            style={{ padding: "9px 22px", border: "1.5px solid #e5e7eb", borderRadius: 8, background: "#fff", color: "#6b7280", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "#f9fafb"; e.currentTarget.style.borderColor = "#d1d5db"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#e5e7eb"; }}
           >
@@ -602,7 +602,7 @@ const EditProduct = () => {
             style={{
               padding: "9px 26px", border: "none", borderRadius: 8,
               background: submitting ? "#555" : "#1a1a1a", color: "#fff",
-              fontSize: 13.5, fontWeight: 600,
+              fontSize: 15, fontWeight: 600,
               cursor: submitting ? "not-allowed" : "pointer",
               fontFamily: "inherit", transition: "background .15s",
               display: "flex", alignItems: "center", gap: 8,

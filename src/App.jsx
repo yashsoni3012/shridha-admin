@@ -7,9 +7,9 @@ import UsersPage from './pages/users/UsersPage'
 import Banner from './pages/banner/Banner'
 import AddBanner from './pages/banner/AddBanner'
 import EditBanner from './pages/banner/EditBanner'
-import Category from './pages/category/Category'
-import AddCategory from './pages/category/Addcategory'
-import EditCategory from './pages/category/EditCategory'
+// import Category from './pages/category/Category'
+// import AddCategory from './pages/category/Addcategory'
+// import EditCategory from './pages/category/EditCategory'
 import Products from './pages/products/Products'
 import AddProduct from './pages/products/AddProduct'
 import EditProduct from './pages/products/EditProduct'
@@ -68,9 +68,9 @@ export default function App() {
 
 
           {/* Categories */}
-          <Route path="/categories" element={<Category />} />
+          {/* <Route path="/categories" element={<Category />} />
           <Route path="/add-category" element={<AddCategory />} />
-          <Route path="/edit-category/:id" element={<EditCategory />} />
+          <Route path="/edit-category/:id" element={<EditCategory />} /> */}
 
           {/* Products */}
           <Route path="/products" element={<Products />} />

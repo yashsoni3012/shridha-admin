@@ -196,7 +196,6 @@ const ProductList = () => {
                   { label: "Discount", value: viewProduct.discountPercentage > 0 ? `${viewProduct.discountPercentage}% off` : "No discount" },
                   { label: "Added", value: formatDate(viewProduct.createdAt) },
                   ...(viewProduct.updatedAt !== viewProduct.createdAt ? [{ label: "Last Updated", value: formatDate(viewProduct.updatedAt) }] : []),
-                  { label: "Product ID", value: viewProduct._id },
                 ].map((item) => (
                   <div key={item.label}>
                     <p style={{ margin: 0, fontSize: 11, color: "#9ca3af", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px" }}>{item.label}</p>

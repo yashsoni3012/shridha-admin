@@ -42,7 +42,7 @@ const AddProduct = () => {
 
   const [formData, setFormData] = useState({
     name: "", price: "", discountPercentage: "",
-    category: "", specification: "", description: "",
+    category: "", specifications: [], descriptions: [], // arrays for multiple entries
   });
 
   const [selectedColors, setSelectedColors] = useState([]);
@@ -68,6 +68,52 @@ const AddProduct = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handlers for specifications array
+  const handleSpecChange = (index, value) => {
+    setFormData(prev => {
+      const newSpecs = [...prev.specifications];
+      newSpecs[index] = value;
+      return { ...prev, specifications: newSpecs };
+    });
+  };
+
+  const addSpecification = () => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: [...prev.specifications, ""]
+    }));
+  };
+
+  const removeSpecification = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      specifications: prev.specifications.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Handlers for descriptions array
+  const handleDescChange = (index, value) => {
+    setFormData(prev => {
+      const newDescs = [...prev.descriptions];
+      newDescs[index] = value;
+      return { ...prev, descriptions: newDescs };
+    });
+  };
+
+  const addDescription = () => {
+    setFormData(prev => ({
+      ...prev,
+      descriptions: [...prev.descriptions, ""]
+    }));
+  };
+
+  const removeDescription = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      descriptions: prev.descriptions.filter((_, i) => i !== index)
+    }));
   };
 
   const handleColorToggle = (color) =>
@@ -113,8 +159,17 @@ const AddProduct = () => {
     submitData.append("category", formData.category);
     submitData.append("colors", selectedColors.join(","));
     submitData.append("sizes", selectedSizes.map((s) => s.toLowerCase()).join(","));
-    submitData.append("specification", formData.specification);
-    submitData.append("description", formData.description);
+
+    // Append each specification individually (server should treat as array)
+    formData.specifications.forEach(spec => {
+      if (spec.trim()) submitData.append("specification", spec.trim());
+    });
+
+    // Append each description individually
+    formData.descriptions.forEach(desc => {
+      if (desc.trim()) submitData.append("description", desc.trim());
+    });
+
     imageFiles.forEach((file) => submitData.append("images", file));
 
     setLoading(true);
@@ -160,7 +215,7 @@ const AddProduct = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f2f5", padding: "24px 16px", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#f0f2f5",  fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", background: "#fff", borderRadius: 14, boxShadow: "0 1px 12px rgba(0,0,0,.07)", overflow: "hidden" }}>
 
         {/* ── Header ── */}
@@ -327,32 +382,100 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              {/* ── Specification ── */}
+              {/* ── Specifications (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Specification</label>
-                <textarea
-                  name="specification" value={formData.specification}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder="Enter product specifications…"
-                  style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, ...focusStyle("specification") }}
-                  onFocus={() => setFocusedField("specification")}
-                  onBlur={() => setFocusedField("")}
-                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={labelStyle}>Specifications</label>
+                  <button
+                    type="button"
+                    onClick={addSpecification}
+                    style={{
+                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
+                      border: "1.5px solid #1a1a1a", borderRadius: 6,
+                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: 4,
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add
+                  </button>
+                </div>
+                {formData.specifications.map((spec, index) => (
+                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <input
+                      type="text"
+                      value={spec}
+                      onChange={(e) => handleSpecChange(index, e.target.value)}
+                      placeholder={`Specification #${index + 1}`}
+                      style={{ ...inputStyle, flex: 1 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeSpecification(index)}
+                      style={{
+                        width: 36, height: 36, borderRadius: 8,
+                        border: "1.5px solid #e5e7eb", background: "#fff",
+                        color: "#ef4444", fontSize: 18, fontWeight: 600,
+                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {formData.specifications.length === 0 && (
+                  <p style={fieldDesc}>No specifications added. Click "Add" to create one.</p>
+                )}
               </div>
 
-              {/* ── Description ── */}
+              {/* ── Descriptions (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <label style={labelStyle}>Description</label>
-                <textarea
-                  name="description" value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  placeholder="Enter product description…"
-                  style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, ...focusStyle("description") }}
-                  onFocus={() => setFocusedField("description")}
-                  onBlur={() => setFocusedField("")}
-                />
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={labelStyle}>Descriptions</label>
+                  <button
+                    type="button"
+                    onClick={addDescription}
+                    style={{
+                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
+                      border: "1.5px solid #1a1a1a", borderRadius: 6,
+                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: 4,
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add
+                  </button>
+                </div>
+                {formData.descriptions.map((desc, index) => (
+                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <textarea
+                      value={desc}
+                      onChange={(e) => handleDescChange(index, e.target.value)}
+                      placeholder={`Description #${index + 1}`}
+                      rows={2}
+                      style={{ ...inputStyle, flex: 1, resize: "vertical" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeDescription(index)}
+                      style={{
+                        width: 36, height: 36, borderRadius: 8,
+                        border: "1.5px solid #e5e7eb", background: "#fff",
+                        color: "#ef4444", fontSize: 18, fontWeight: 600,
+                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                {formData.descriptions.length === 0 && (
+                  <p style={fieldDesc}>No descriptions added. Click "Add" to create one.</p>
+                )}
               </div>
 
               {/* ── Images ── */}

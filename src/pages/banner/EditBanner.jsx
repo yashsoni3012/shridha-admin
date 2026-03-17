@@ -184,7 +184,6 @@ const EditBanner = () => {
     <div style={{
       minHeight: '100vh',
       background: '#f0f2f5',
-      padding: '24px 16px',
       fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     }}>
       {/* max-w-7xl card */}

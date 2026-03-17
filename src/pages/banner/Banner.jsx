@@ -187,7 +187,6 @@ const BannerList = () => {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, background: "#f9fafb", borderRadius: 10, padding: "14px 16px", border: "1.5px solid #e5e7eb" }}>
                 {[
-                  { label: "Banner ID", value: viewBanner._id },
                   { label: "Added", value: formatDate(viewBanner.createdAt) },
                   ...(viewBanner.updatedAt !== viewBanner.createdAt ? [{ label: "Last Updated", value: formatDate(viewBanner.updatedAt) }] : []),
                 ].map((item) => (
@@ -319,7 +318,7 @@ const BannerList = () => {
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
               <thead>
                 <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                  {["#", "Desktop Preview", "Mobile Preview", "Banner ID", "Added", "Updated", "Actions"].map((col) => (
+                  {["#", "Desktop Preview", "Mobile Preview", "Added", "Updated", "Actions"].map((col) => (
                     <th key={col} style={{ padding: "11px 16px", textAlign: "left", fontSize: 11.5, fontWeight: 700, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>
                       {col}
                     </th>
@@ -357,9 +356,7 @@ const BannerList = () => {
                         <span style={{ fontSize: 13, color: "#d1d5db" }}>—</span>
                       )}
                     </td>
-                    <td style={{ padding: "12px 16px", fontFamily: "monospace", fontSize: 12, color: "#6b7280", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {banner._id}
-                    </td>
+                    
                     <td style={{ padding: "12px 16px", fontSize: 13, color: "#374151", whiteSpace: "nowrap" }}>
                       {formatDate(banner.createdAt)}
                     </td>

@@ -260,7 +260,7 @@ const EditProduct = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f2f5", padding: "24px 16px", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#f0f2f5",  fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto", background: "#fff", borderRadius: 14, boxShadow: "0 1px 12px rgba(0,0,0,.07)", overflow: "hidden" }}>
 
         {/* ── Header ── */}

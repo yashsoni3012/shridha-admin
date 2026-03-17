@@ -121,7 +121,7 @@ const ProductList = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f2f5", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: "100vh",  fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
 
       {/* ─────────── VIEW MODAL ─────────── */}
       {viewProduct && (

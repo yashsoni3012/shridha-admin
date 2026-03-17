@@ -115,11 +115,11 @@ const Dashboard = () => {
 
   return (
     <div
-      className="min-h-screen bg-[#f8f9fb]"
+      className="min-h-screen"
       style={{ fontFamily: "'DM Sans', sans-serif" }}
     >
       {/* ── Body ── */}
-      <main className="px-6 sm:px-8 py-8 max-w-7xl mx-auto">
+      <main className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-gray-800 tracking-tight">

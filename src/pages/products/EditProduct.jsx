@@ -6,26 +6,55 @@ const PRODUCT_API_URL = `${API_BASE_URL}/product`;
 const CATEGORY_API_URL = `${API_BASE_URL}/category`;
 
 const COLOR_OPTIONS = [
-  "Black", "White", "Red", "Blue", "Green", "Yellow", "Pink", "Purple",
-  "Orange", "Brown", "Gray", "Navy", "Teal", "Maroon", "Gold", "Silver",
+  "Black",
+  "White",
+  "Red",
+  "Blue",
+  "Green",
+  "Yellow",
+  "Pink",
+  "Purple",
+  "Orange",
+  "Brown",
+  "Gray",
+  "Navy",
+  "Teal",
+  "Maroon",
+  "Gold",
+  "Silver",
 ];
 
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 
-// ── Shared style helpers ──
+// ── Shared style helpers (no shorthand conflicts) ──
 const labelStyle = {
-  display: "block", marginBottom: 6,
-  fontSize: 15, fontWeight: 600, color: "#374151",
+  display: "block",
+  marginBottom: 6,
+  fontSize: 15,
+  fontWeight: 600,
+  color: "#374151",
 };
 
-const inputStyle = {
-  width: "100%", boxSizing: "border-box",
-  border: "1.5px solid #e5e7eb", borderRadius: 10,
-  padding: "10px 14px", fontSize: 15,
-  color: "#374151", background: "#fafafa",
-  outline: "none", fontFamily: "inherit",
-  transition: "border-color .15s, background .15s",
+const inputBaseStyle = {
+  width: "100%",
+  boxSizing: "border-box",
+  borderWidth: "1.5px",
+  borderStyle: "solid",
+  borderColor: "#e5e7eb",
+  borderRadius: 10,
+  padding: "10px 14px",
+  fontSize: 15,
+  color: "#374151",
+  backgroundColor: "#fafafa",
+  outline: "none",
+  fontFamily: "inherit",
+  transition: "border-color .15s, background-color .15s",
 };
+
+const focusStyle = (field, focusedField) =>
+  focusedField === field
+    ? { borderColor: "#1a1a1a", backgroundColor: "#fff" }
+    : {};
 
 const fieldDesc = { margin: "5px 0 0", fontSize: 12.5, color: "#9ca3af" };
 
@@ -43,8 +72,12 @@ const EditProduct = () => {
   const [focusedField, setFocusedField] = useState("");
 
   const [formData, setFormData] = useState({
-    name: "", price: "", discountPercentage: "",
-    category: "", specifications: [], descriptions: [],
+    name: "",
+    price: "",
+    discountPercentage: "",
+    category: "",
+    specifications: [],
+    descriptions: [],
   });
 
   const [selectedColors, setSelectedColors] = useState([]);
@@ -60,7 +93,8 @@ const EditProduct = () => {
       try {
         const res = await fetch(CATEGORY_API_URL);
         const result = await res.json();
-        if (result.success && Array.isArray(result.data)) setCategories(result.data);
+        if (result.success && Array.isArray(result.data))
+          setCategories(result.data);
       } catch (err) {
         console.error("Failed to load categories", err);
       } finally {
@@ -72,8 +106,22 @@ const EditProduct = () => {
 
   const parseCommaString = (str) => {
     if (!str) return [];
-    if (Array.isArray(str)) return str;
-    if (typeof str === "string") return str.split(",").map((s) => s.trim()).filter((s) => s !== "");
+    const parseCommaString = (data) => {
+      if (!data) return [];
+      if (Array.isArray(data)) return data;
+      if (typeof data === "string") {
+        return data
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+      return [];
+    };
+    if (typeof str === "string")
+      return str
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s !== "");
     return [];
   };
 
@@ -84,11 +132,11 @@ const EditProduct = () => {
     return "";
   };
 
-  // Parse array fields (specifications, descriptions) – they might be arrays or strings
   const parseArrayField = (field) => {
     if (!field) return [];
     if (Array.isArray(field)) return field;
-    if (typeof field === "string") return field.split("\n").filter(s => s.trim() !== "");
+    if (typeof field === "string")
+      return field.split("\n").filter((s) => s.trim() !== "");
     return [];
   };
 
@@ -98,21 +146,32 @@ const EditProduct = () => {
       try {
         setLoadingProduct(true);
         const res = await fetch(`${PRODUCT_API_URL}/${id}`);
-        if (!res.ok) throw new Error(`Failed to fetch product (status ${res.status})`);
+        if (!res.ok)
+          throw new Error(`Failed to fetch product (status ${res.status})`);
         const result = await res.json();
         if (result.success && result.data) {
-          const product = Array.isArray(result.data) ? result.data[0] : result.data;
+          const product = Array.isArray(result.data)
+            ? result.data[0]
+            : result.data;
           setOriginal(product);
           setFormData({
             name: product.name || "",
             price: product.price || "",
             discountPercentage: product.discountPercentage || "",
             category: getCategoryId(product.category),
-            specifications: parseArrayField(product.specification || product.specifications),
-            descriptions: parseArrayField(product.description || product.descriptions),
+            specifications: parseArrayField(
+              product.specification || product.specifications,
+            ),
+            descriptions: parseArrayField(
+              product.description || product.descriptions,
+            ),
           });
-          setSelectedColors(parseCommaString(product.colors));
-          setSelectedSizes(parseCommaString(product.sizes).map((s) => s.toUpperCase()));
+          setSelectedColors(
+            parseCommaString(product.colors).map((c) => c.toLowerCase()),
+          );
+          setSelectedSizes(
+            parseCommaString(product.sizes).map((s) => s.toUpperCase()),
+          );
           setExistingImages(product.images || []);
         } else {
           throw new Error("Invalid product data");
@@ -133,7 +192,7 @@ const EditProduct = () => {
 
   // Specifications handlers
   const handleSpecChange = (index, value) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const newSpecs = [...prev.specifications];
       newSpecs[index] = value;
       return { ...prev, specifications: newSpecs };
@@ -141,22 +200,22 @@ const EditProduct = () => {
   };
 
   const addSpecification = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specifications: [...prev.specifications, ""]
+      specifications: [...prev.specifications, ""],
     }));
   };
 
   const removeSpecification = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specifications: prev.specifications.filter((_, i) => i !== index)
+      specifications: prev.specifications.filter((_, i) => i !== index),
     }));
   };
 
   // Descriptions handlers
   const handleDescChange = (index, value) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const newDescs = [...prev.descriptions];
       newDescs[index] = value;
       return { ...prev, descriptions: newDescs };
@@ -164,27 +223,30 @@ const EditProduct = () => {
   };
 
   const addDescription = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      descriptions: [...prev.descriptions, ""]
+      descriptions: [...prev.descriptions, ""],
     }));
   };
 
   const removeDescription = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      descriptions: prev.descriptions.filter((_, i) => i !== index)
+      descriptions: prev.descriptions.filter((_, i) => i !== index),
     }));
   };
 
-  const handleColorToggle = (color) =>
+  const handleColorToggle = (color) => {
+    const lower = color.toLowerCase();
+
     setSelectedColors((prev) =>
-      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
+      prev.includes(lower) ? prev.filter((c) => c !== lower) : [...prev, lower],
     );
+  };
 
   const handleSizeToggle = (size) =>
     setSelectedSizes((prev) =>
-      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size],
     );
 
   const handleAddImages = (e) => {
@@ -209,11 +271,13 @@ const EditProduct = () => {
 
   const replaceImage = (index, file) => {
     const url = existingImages[index];
-    if (imagesToDelete.includes(url)) setImagesToDelete((prev) => prev.filter((u) => u !== url));
+    if (imagesToDelete.includes(url))
+      setImagesToDelete((prev) => prev.filter((u) => u !== url));
     setReplaceMap((prev) => ({ ...prev, [index]: file }));
   };
 
-  const removeNewImage = (index) => setNewImages((prev) => prev.filter((_, i) => i !== index));
+  const removeNewImage = (index) =>
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
 
   const arraysEqual = (a, b) => {
     const sortedA = [...a].sort();
@@ -233,14 +297,24 @@ const EditProduct = () => {
 
   const specificationsChanged = () => {
     if (!original) return false;
-    const originalSpecs = parseArrayField(original.specification || original.specifications);
-    return !arraysEqual(formData.specifications.filter(s => s.trim() !== ""), originalSpecs.filter(s => s.trim() !== ""));
+    const originalSpecs = parseArrayField(
+      original.specification || original.specifications,
+    );
+    return !arraysEqual(
+      formData.specifications.filter((s) => s.trim() !== ""),
+      originalSpecs.filter((s) => s.trim() !== ""),
+    );
   };
 
   const descriptionsChanged = () => {
     if (!original) return false;
-    const originalDescs = parseArrayField(original.description || original.descriptions);
-    return !arraysEqual(formData.descriptions.filter(d => d.trim() !== ""), originalDescs.filter(d => d.trim() !== ""));
+    const originalDescs = parseArrayField(
+      original.description || original.descriptions,
+    );
+    return !arraysEqual(
+      formData.descriptions.filter((d) => d.trim() !== ""),
+      originalDescs.filter((d) => d.trim() !== ""),
+    );
   };
 
   const colorsChanged = () => {
@@ -255,7 +329,8 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); setSuccess("");
+    setError("");
+    setSuccess("");
 
     const submitData = new FormData();
 
@@ -263,32 +338,39 @@ const EditProduct = () => {
     if (textFieldsChanged()) {
       submitData.append("name", formData.name);
       submitData.append("price", formData.price);
-      if (formData.discountPercentage) submitData.append("discountPercentage", formData.discountPercentage);
+      if (formData.discountPercentage)
+        submitData.append("discountPercentage", formData.discountPercentage);
       submitData.append("category", formData.category);
     }
 
     // Specifications (multiple)
     if (specificationsChanged()) {
-      formData.specifications.forEach(spec => {
+      formData.specifications.forEach((spec) => {
         if (spec.trim()) submitData.append("specification", spec.trim());
       });
     }
 
     // Descriptions (multiple)
     if (descriptionsChanged()) {
-      formData.descriptions.forEach(desc => {
+      formData.descriptions.forEach((desc) => {
         if (desc.trim()) submitData.append("description", desc.trim());
       });
     }
 
-    // Colors
+    // Colors: send as a single comma-separated string in lowercase
     if (colorsChanged()) {
-      selectedColors.forEach((color) => submitData.append("colors", color));
+      submitData.append(
+        "colors",
+        selectedColors.map((c) => c.toLowerCase()).join(","),
+      );
     }
 
-    // Sizes
+    // Sizes: send as a single comma-separated string in lowercase (same as AddProduct)
     if (sizesChanged()) {
-      selectedSizes.forEach((size) => submitData.append("sizes", size.toLowerCase()));
+      submitData.append(
+        "sizes",
+        selectedSizes.map((s) => s.toLowerCase()).join(","),
+      );
     }
 
     // Image changes
@@ -303,13 +385,20 @@ const EditProduct = () => {
     }
 
     // Check if any change
-    if (submitData.entries().next().done) { setError("No changes detected."); return; }
+    if (submitData.entries().next().done) {
+      setError("No changes detected.");
+      return;
+    }
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${PRODUCT_API_URL}/${id}`, { method: "PATCH", body: submitData });
+      const response = await fetch(`${PRODUCT_API_URL}/${id}`, {
+        method: "PATCH",
+        body: submitData,
+      });
       const result = await response.json();
-      if (!response.ok) throw new Error(result.message || `HTTP error ${response.status}`);
+      if (!response.ok)
+        throw new Error(result.message || `HTTP error ${response.status}`);
       if (result.success) {
         setSuccess("Product updated successfully!");
         setTimeout(() => navigate("/products"), 2000);
@@ -323,11 +412,17 @@ const EditProduct = () => {
     }
   };
 
-  const focusStyle = (name) =>
-    focusedField === name ? { borderColor: "#1a1a1a", background: "#fff" } : {};
-
   const CheckIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="20 6 9 17 4 12" />
     </svg>
   );
@@ -337,12 +432,32 @@ const EditProduct = () => {
   // ── Loading ──
   if (loadingCategories || loadingProduct) {
     return (
-      <div style={{ minHeight: "100vh", background: "#f0f2f5", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#f0f2f5",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "'DM Sans','Segoe UI',sans-serif",
+        }}
+      >
         <div style={{ textAlign: "center" }}>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 1s linear infinite" }}>
+          <svg
+            width="36"
+            height="36"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1a1a1a"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            style={{ animation: "spin 1s linear infinite" }}
+          >
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           </svg>
-          <p style={{ marginTop: 10, color: "#6b7280", fontSize: 14 }}>Loading product…</p>
+          <p style={{ marginTop: 10, color: "#6b7280", fontSize: 14 }}>
+            Loading product…
+          </p>
         </div>
         <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </div>
@@ -350,71 +465,180 @@ const EditProduct = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f2f5",  fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
-      <div style={{ maxWidth: 1280, margin: "0 auto", background: "#fff", borderRadius: 14, boxShadow: "0 1px 12px rgba(0,0,0,.07)", overflow: "hidden" }}>
-
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f0f2f5",
+        fontFamily: "'DM Sans','Segoe UI',sans-serif",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1280,
+          margin: "0 auto",
+          background: "#fff",
+          borderRadius: 14,
+          boxShadow: "0 1px 12px rgba(0,0,0,.07)",
+          overflow: "hidden",
+        }}
+      >
         {/* ── Header ── */}
-        <div style={{ padding: "18px 24px", display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            padding: "18px 24px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <button
             type="button"
             onClick={() => navigate("/products")}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: 8, border: "1.5px solid #e5e7eb", background: "#fff", cursor: "pointer", flexShrink: 0, transition: "all .15s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#f3f4f6"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 34,
+              height: 34,
+              borderRadius: 8,
+              border: "1.5px solid #e5e7eb",
+              background: "#fff",
+              cursor: "pointer",
+              flexShrink: 0,
+              transition: "all .15s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#f3f4f6";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#fff";
+            }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#374151"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
             </svg>
           </button>
-          <h2 style={{ margin: 0, fontSize: 17, fontWeight: 700, color: "#1a1f2e", letterSpacing: "-0.2px" }}>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 17,
+              fontWeight: 700,
+              color: "#1a1f2e",
+              letterSpacing: "-0.2px",
+            }}
+          >
             Edit Product
           </h2>
         </div>
-        <hr style={{ margin: 0, border: "none", borderTop: "1px solid #e5e7eb" }} />
+        <hr
+          style={{ margin: 0, border: "none", borderTop: "1px solid #e5e7eb" }}
+        />
 
         {/* ── Body ── */}
         <div style={{ padding: "24px" }}>
-
           {/* Alerts */}
           {error && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#fff5f5", border: "1px solid #fecaca", color: "#c0392b", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            <div
+              style={{
+                marginBottom: 18,
+                borderRadius: 8,
+                padding: "10px 14px",
+                background: "#fff5f5",
+                border: "1px solid #fecaca",
+                color: "#c0392b",
+                fontSize: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
               {error}
             </div>
           )}
           {success && (
-            <div style={{ marginBottom: 18, borderRadius: 8, padding: "10px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", color: "#15803d", fontSize: 14, display: "flex", alignItems: "center", gap: 8 }}>
+            <div
+              style={{
+                marginBottom: 18,
+                borderRadius: 8,
+                padding: "10px 14px",
+                background: "#f0fdf4",
+                border: "1px solid #bbf7d0",
+                color: "#15803d",
+                fontSize: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
               <CheckIcon /> {success}
             </div>
           )}
 
           <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div style={{  width: '100%', margin: "0 auto" }}>
-
+            <div style={{ width: "100%", margin: "0 auto" }}>
               {/* ── Product Name ── */}
               <div style={{ marginBottom: 20 }}>
                 <label style={labelStyle}>Product Name</label>
                 <input
-                  type="text" name="name" value={formData.name}
+                  type="text"
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
                   placeholder="Enter product name"
-                  style={{ ...inputStyle, ...focusStyle("name") }}
+                  style={{
+                    ...inputBaseStyle,
+                    ...focusStyle("name", focusedField),
+                  }}
                   onFocus={() => setFocusedField("name")}
                   onBlur={() => setFocusedField("")}
                 />
               </div>
 
               {/* ── Price & Discount ── */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 16,
+                  marginBottom: 20,
+                }}
+              >
                 <div>
                   <label style={labelStyle}>Price (₹)</label>
                   <input
-                    type="number" name="price" value={formData.price}
+                    type="number"
+                    name="price"
+                    value={formData.price}
                     onChange={handleInputChange}
                     placeholder="0.00"
-                    style={{ ...inputStyle, ...focusStyle("price") }}
+                    style={{
+                      ...inputBaseStyle,
+                      ...focusStyle("price", focusedField),
+                    }}
                     onFocus={() => setFocusedField("price")}
                     onBlur={() => setFocusedField("")}
                   />
@@ -422,11 +646,17 @@ const EditProduct = () => {
                 <div>
                   <label style={labelStyle}>Discount %</label>
                   <input
-                    type="number" name="discountPercentage" value={formData.discountPercentage}
+                    type="number"
+                    name="discountPercentage"
+                    value={formData.discountPercentage}
                     onChange={handleInputChange}
                     placeholder="0"
-                    min="0" max="100"
-                    style={{ ...inputStyle, ...focusStyle("discount") }}
+                    min="0"
+                    max="100"
+                    style={{
+                      ...inputBaseStyle,
+                      ...focusStyle("discount", focusedField),
+                    }}
                     onFocus={() => setFocusedField("discount")}
                     onBlur={() => setFocusedField("")}
                   />
@@ -437,15 +667,27 @@ const EditProduct = () => {
               <div style={{ marginBottom: 20 }}>
                 <label style={labelStyle}>Category</label>
                 <select
-                  name="category" value={formData.category}
+                  name="category"
+                  value={formData.category}
                   onChange={handleInputChange}
-                  style={{ ...inputStyle, ...focusStyle("category"), cursor: "pointer", appearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center", paddingRight: 40 }}
+                  style={{
+                    ...inputBaseStyle,
+                    ...focusStyle("category", focusedField),
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 14px center",
+                    paddingRight: 40,
+                  }}
                   onFocus={() => setFocusedField("category")}
                   onBlur={() => setFocusedField("")}
                 >
                   <option value="">Select a category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -453,19 +695,34 @@ const EditProduct = () => {
               {/* ── Colors ── */}
               <div style={{ marginBottom: 20 }}>
                 <label style={labelStyle}>Colors</label>
-                <div style={{ border: "1.5px solid #e5e7eb", borderRadius: 10, padding: "14px 16px", background: "#fafafa" }}>
+                <div
+                  style={{
+                    border: "1.5px solid #e5e7eb",
+                    borderRadius: 10,
+                    padding: "14px 16px",
+                    backgroundColor: "#fafafa",
+                  }}
+                >
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {COLOR_OPTIONS.map((color) => {
-                      const active = selectedColors.includes(color);
+                      const active = selectedColors.includes(
+                        color.toLowerCase(),
+                      );
                       return (
                         <button
-                          key={color} type="button"
+                          key={color}
+                          type="button"
                           onClick={() => handleColorToggle(color)}
                           style={{
-                            padding: "5px 14px", borderRadius: 8, fontSize: 14, fontWeight: 500,
-                            cursor: "pointer", fontFamily: "inherit", transition: "all .15s",
+                            padding: "5px 14px",
+                            borderRadius: 8,
+                            fontSize: 14,
+                            fontWeight: 500,
+                            cursor: "pointer",
+                            fontFamily: "inherit",
+                            transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
-                            background: active ? "#1a1a1a" : "#fff",
+                            backgroundColor: active ? "#1a1a1a" : "#fff",
                             color: active ? "#fff" : "#374151",
                           }}
                         >
@@ -475,8 +732,17 @@ const EditProduct = () => {
                     })}
                   </div>
                   {selectedColors.length > 0 && (
-                    <p style={{ margin: "10px 0 0", fontSize: 12, color: "#6b7280" }}>
-                      Selected: {selectedColors.join(", ")}
+                    <p
+                      style={{
+                        margin: "10px 0 0",
+                        fontSize: 12,
+                        color: "#6b7280",
+                      }}
+                    >
+                      Selected:{" "}
+                      {selectedColors
+                        .map((c) => c.charAt(0).toUpperCase() + c.slice(1))
+                        .join(", ")}
                     </p>
                   )}
                 </div>
@@ -485,20 +751,34 @@ const EditProduct = () => {
               {/* ── Sizes ── */}
               <div style={{ marginBottom: 20 }}>
                 <label style={labelStyle}>Sizes</label>
-                <div style={{ border: "1.5px solid #e5e7eb", borderRadius: 10, padding: "14px 16px", background: "#fafafa" }}>
+                <div
+                  style={{
+                    border: "1.5px solid #e5e7eb",
+                    borderRadius: 10,
+                    padding: "14px 16px",
+                    backgroundColor: "#fafafa",
+                  }}
+                >
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {SIZE_OPTIONS.map((size) => {
                       const active = selectedSizes.includes(size);
                       return (
                         <button
-                          key={size} type="button"
+                          key={size}
+                          type="button"
                           onClick={() => handleSizeToggle(size)}
                           style={{
-                            minWidth: 52, height: 40, padding: "0 10px", borderRadius: 8,
-                            fontSize: 14, fontWeight: 700, cursor: "pointer",
-                            fontFamily: "inherit", transition: "all .15s",
+                            minWidth: 52,
+                            height: 40,
+                            padding: "0 10px",
+                            borderRadius: 8,
+                            fontSize: 14,
+                            fontWeight: 700,
+                            cursor: "pointer",
+                            fontFamily: "inherit",
+                            transition: "all .15s",
                             border: `1.5px solid ${active ? "#1a1a1a" : "#e5e7eb"}`,
-                            background: active ? "#1a1a1a" : "#fff",
+                            backgroundColor: active ? "#1a1a1a" : "#fff",
                             color: active ? "#fff" : "#374151",
                             textTransform: "uppercase",
                           }}
@@ -509,7 +789,13 @@ const EditProduct = () => {
                     })}
                   </div>
                   {selectedSizes.length > 0 && (
-                    <p style={{ margin: "10px 0 0", fontSize: 12, color: "#6b7280" }}>
+                    <p
+                      style={{
+                        margin: "10px 0 0",
+                        fontSize: 12,
+                        color: "#6b7280",
+                      }}
+                    >
                       Selected: {selectedSizes.join(", ")}
                     </p>
                   )}
@@ -518,41 +804,74 @@ const EditProduct = () => {
 
               {/* ── Specifications (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
                   <label style={labelStyle}>Specifications</label>
                   <button
                     type="button"
                     onClick={addSpecification}
                     style={{
-                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
-                      border: "1.5px solid #1a1a1a", borderRadius: 6,
-                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
-                      display: "flex", alignItems: "center", gap: 4,
+                      padding: "4px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      border: "1.5px solid #1a1a1a",
+                      borderRadius: 6,
+                      background: "#fff",
+                      color: "#1a1a1a",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
                     }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
                     Add
                   </button>
                 </div>
                 {formData.specifications.map((spec, index) => (
-                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                  <div
+                    key={index}
+                    style={{ display: "flex", gap: 8, marginBottom: 8 }}
+                  >
                     <input
                       type="text"
                       value={spec}
                       onChange={(e) => handleSpecChange(index, e.target.value)}
                       placeholder={`Specification #${index + 1}`}
-                      style={{ ...inputStyle, flex: 1 }}
+                      style={{ ...inputBaseStyle, flex: 1 }}
                     />
                     <button
                       type="button"
                       onClick={() => removeSpecification(index)}
                       style={{
-                        width: 36, height: 36, borderRadius: 8,
-                        border: "1.5px solid #e5e7eb", background: "#fff",
-                        color: "#ef4444", fontSize: 18, fontWeight: 600,
-                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        border: "1.5px solid #e5e7eb",
+                        background: "#fff",
+                        color: "#ef4444",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       ×
@@ -560,47 +879,82 @@ const EditProduct = () => {
                   </div>
                 ))}
                 {formData.specifications.length === 0 && (
-                  <p style={fieldDesc}>No specifications added. Click "Add" to create one.</p>
+                  <p style={fieldDesc}>
+                    No specifications added. Click "Add" to create one.
+                  </p>
                 )}
               </div>
 
               {/* ── Descriptions (multiple) ── */}
               <div style={{ marginBottom: 20 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
                   <label style={labelStyle}>Descriptions</label>
                   <button
                     type="button"
                     onClick={addDescription}
                     style={{
-                      padding: "4px 12px", fontSize: 12, fontWeight: 600,
-                      border: "1.5px solid #1a1a1a", borderRadius: 6,
-                      background: "#fff", color: "#1a1a1a", cursor: "pointer",
-                      display: "flex", alignItems: "center", gap: 4,
+                      padding: "4px 12px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      border: "1.5px solid #1a1a1a",
+                      borderRadius: 6,
+                      background: "#fff",
+                      color: "#1a1a1a",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
                     }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
                     Add
                   </button>
                 </div>
                 {formData.descriptions.map((desc, index) => (
-                  <div key={index} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                  <div
+                    key={index}
+                    style={{ display: "flex", gap: 8, marginBottom: 8 }}
+                  >
                     <textarea
                       value={desc}
                       onChange={(e) => handleDescChange(index, e.target.value)}
                       placeholder={`Description #${index + 1}`}
                       rows={2}
-                      style={{ ...inputStyle, flex: 1, resize: "vertical" }}
+                      style={{ ...inputBaseStyle, flex: 1, resize: "vertical" }}
                     />
                     <button
                       type="button"
                       onClick={() => removeDescription(index)}
                       style={{
-                        width: 36, height: 36, borderRadius: 8,
-                        border: "1.5px solid #e5e7eb", background: "#fff",
-                        color: "#ef4444", fontSize: 18, fontWeight: 600,
-                        cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        border: "1.5px solid #e5e7eb",
+                        background: "#fff",
+                        color: "#ef4444",
+                        fontSize: 18,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       ×
@@ -608,18 +962,34 @@ const EditProduct = () => {
                   </div>
                 ))}
                 {formData.descriptions.length === 0 && (
-                  <p style={fieldDesc}>No descriptions added. Click "Add" to create one.</p>
+                  <p style={fieldDesc}>
+                    No descriptions added. Click "Add" to create one.
+                  </p>
                 )}
               </div>
 
               {/* ── Existing Images ── */}
               {existingImages.length > 0 && (
                 <div style={{ marginBottom: 20 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 8,
+                    }}
+                  >
                     <label style={labelStyle}>Current Images</label>
                     {imagesToDelete.length > 0 && (
-                      <span style={{ fontSize: 12, color: "#ef4444", fontWeight: 500 }}>
-                        {imagesToDelete.length} image{imagesToDelete.length > 1 ? "s" : ""} will be deleted
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#ef4444",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {imagesToDelete.length} image
+                        {imagesToDelete.length > 1 ? "s" : ""} will be deleted
                       </span>
                     )}
                   </div>
@@ -630,33 +1000,89 @@ const EditProduct = () => {
                           src={`${API_BASE_URL}${url}`}
                           alt={`product ${idx}`}
                           style={{
-                            width: 80, height: 80, objectFit: "cover", borderRadius: 8,
-                            border: replaceMap[idx] ? "2px solid #1a1a1a" : "1.5px solid #e5e7eb",
+                            width: 80,
+                            height: 80,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            border: replaceMap[idx]
+                              ? "2px solid #1a1a1a"
+                              : "1.5px solid #e5e7eb",
                             display: "block",
                           }}
-                          onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/80x80?text=Error"; }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/80x80?text=Error";
+                          }}
                         />
 
                         {/* Replace badge */}
                         {replaceMap[idx] && (
-                          <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,.7)", color: "#fff", fontSize: 10, fontWeight: 700, textAlign: "center", padding: "2px 0", borderRadius: "0 0 7px 7px" }}>
+                          <span
+                            style={{
+                              position: "absolute",
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              backgroundColor: "rgba(0,0,0,.7)",
+                              color: "#fff",
+                              fontSize: 10,
+                              fontWeight: 700,
+                              textAlign: "center",
+                              padding: "2px 0",
+                              borderRadius: "0 0 7px 7px",
+                            }}
+                          >
                             replaced
                           </span>
                         )}
 
                         {/* Action buttons */}
-                        <div style={{ position: "absolute", top: -6, right: -6, display: "flex", gap: 3 }}>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: -6,
+                            right: -6,
+                            display: "flex",
+                            gap: 3,
+                          }}
+                        >
                           {/* Replace */}
                           <label
                             title="Replace image"
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: "50%", background: "#1a1a1a", cursor: "pointer" }}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 20,
+                              height: 20,
+                              borderRadius: "50%",
+                              background: "#1a1a1a",
+                              cursor: "pointer",
+                            }}
                           >
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
-                              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                            <svg
+                              width="10"
+                              height="10"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#fff"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M23 4v6h-6" />
+                              <path d="M1 20v-6h6" />
+                              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                             </svg>
-                            <input type="file" accept="image/*" style={{ display: "none" }}
-                              onChange={(e) => { const file = e.target.files[0]; if (file) replaceImage(idx, file); }}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) replaceImage(idx, file);
+                              }}
                             />
                           </label>
 
@@ -665,7 +1091,21 @@ const EditProduct = () => {
                             type="button"
                             title="Delete image"
                             onClick={() => markImageForDeletion(idx)}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", cursor: "pointer", color: "#fff", fontSize: 14, fontWeight: 700, lineHeight: 1 }}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              width: 20,
+                              height: 20,
+                              borderRadius: "50%",
+                              background: "#ef4444",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "#fff",
+                              fontSize: 14,
+                              fontWeight: 700,
+                              lineHeight: 1,
+                            }}
                           >
                             ×
                           </button>
@@ -678,33 +1118,75 @@ const EditProduct = () => {
 
               {/* ── Add More Images ── */}
               <div style={{ marginBottom: 4 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 6,
+                  }}
+                >
                   <label style={labelStyle}>Add More Images</label>
-                  <span style={{ fontSize: 12.5, color: "#9ca3af" }}>{totalImages}/5</span>
+                  <span style={{ fontSize: 12.5, color: "#9ca3af" }}>
+                    {totalImages}/5
+                  </span>
                 </div>
 
                 <label
                   style={{
-                    display: "flex", alignItems: "center", gap: 12,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
                     border: `1.5px ${newImages.length > 0 ? "solid #1a1a1a" : "dashed #d1d5db"}`,
-                    borderRadius: 10, padding: "13px 16px",
+                    borderRadius: 10,
+                    padding: "13px 16px",
                     cursor: totalImages >= 5 ? "not-allowed" : "pointer",
-                    background: newImages.length > 0 ? "#f9f9f9" : "#fafafa",
-                    transition: "all .15s", opacity: totalImages >= 5 ? 0.5 : 1,
+                    backgroundColor:
+                      newImages.length > 0 ? "#f9f9f9" : "#fafafa",
+                    transition: "all .15s",
+                    opacity: totalImages >= 5 ? 0.5 : 1,
                   }}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={newImages.length > 0 ? "#1a1a1a" : "#9ca3af"} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke={newImages.length > 0 ? "#1a1a1a" : "#9ca3af"}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <rect x="3" y="3" width="18" height="18" rx="3" />
-                    <path d="M9 12l3-3 3 3" /><line x1="12" y1="9" x2="12" y2="16" />
+                    <path d="M9 12l3-3 3 3" />
+                    <line x1="12" y1="9" x2="12" y2="16" />
                   </svg>
                   <div style={{ flex: 1 }}>
-                    <p style={{ margin: 0, fontSize: 15, color: totalImages >= 5 ? "#9ca3af" : "#6b7280" }}>
-                      {totalImages >= 5 ? "Maximum 5 images reached" : "Click to add more images"}
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 15,
+                        color: totalImages >= 5 ? "#9ca3af" : "#6b7280",
+                      }}
+                    >
+                      {totalImages >= 5
+                        ? "Maximum 5 images reached"
+                        : "Click to add more images"}
                     </p>
-                    <p style={{ margin: "2px 0 0", fontSize: 12, color: "#9ca3af" }}>PNG, JPG, WEBP</p>
+                    <p
+                      style={{
+                        margin: "2px 0 0",
+                        fontSize: 12,
+                        color: "#9ca3af",
+                      }}
+                    >
+                      PNG, JPG, WEBP
+                    </p>
                   </div>
                   <input
-                    type="file" accept="image/*" multiple
+                    type="file"
+                    accept="image/*"
+                    multiple
                     onChange={handleAddImages}
                     disabled={totalImages >= 5}
                     style={{ display: "none" }}
@@ -713,21 +1195,66 @@ const EditProduct = () => {
 
                 {/* New image previews */}
                 {newImages.length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 10,
+                      marginTop: 12,
+                    }}
+                  >
                     {newImages.map((file, idx) => (
                       <div key={idx} style={{ position: "relative" }}>
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`new ${idx}`}
-                          style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8, border: "1.5px solid #1a1a1a", display: "block" }}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            objectFit: "cover",
+                            borderRadius: 8,
+                            border: "1.5px solid #1a1a1a",
+                            display: "block",
+                          }}
                         />
-                        <span style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,.7)", color: "#fff", fontSize: 10, fontWeight: 700, textAlign: "center", padding: "2px 0", borderRadius: "0 0 7px 7px" }}>
+                        <span
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            backgroundColor: "rgba(0,0,0,.7)",
+                            color: "#fff",
+                            fontSize: 10,
+                            fontWeight: 700,
+                            textAlign: "center",
+                            padding: "2px 0",
+                            borderRadius: "0 0 7px 7px",
+                          }}
+                        >
                           new
                         </span>
                         <button
                           type="button"
                           onClick={() => removeNewImage(idx)}
-                          style={{ position: "absolute", top: -6, right: -6, width: 20, height: 20, borderRadius: "50%", background: "#ef4444", border: "none", color: "#fff", fontSize: 14, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", lineHeight: 1 }}
+                          style={{
+                            position: "absolute",
+                            top: -6,
+                            right: -6,
+                            width: 20,
+                            height: 20,
+                            borderRadius: "50%",
+                            background: "#ef4444",
+                            border: "none",
+                            color: "#fff",
+                            fontSize: 14,
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            lineHeight: 1,
+                          }}
                         >
                           ×
                         </button>
@@ -736,20 +1263,45 @@ const EditProduct = () => {
                   </div>
                 )}
               </div>
-
             </div>
           </form>
         </div>
 
         {/* ── Footer ── */}
-        <hr style={{ margin: 0, border: "none", borderTop: "1px solid #e5e7eb" }} />
-        <div style={{ padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <hr
+          style={{ margin: 0, border: "none", borderTop: "1px solid #e5e7eb" }}
+        />
+        <div
+          style={{
+            padding: "14px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <button
             type="button"
             onClick={() => navigate(-1)}
-            style={{ padding: "9px 22px", border: "1.5px solid #e5e7eb", borderRadius: 8, background: "#fff", color: "#6b7280", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all .15s" }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#f9fafb"; e.currentTarget.style.borderColor = "#d1d5db"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#e5e7eb"; }}
+            style={{
+              padding: "9px 22px",
+              border: "1.5px solid #e5e7eb",
+              borderRadius: 8,
+              background: "#fff",
+              color: "#6b7280",
+              fontSize: 15,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "inherit",
+              transition: "all .15s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#d1d5db";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#fff";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }}
           >
             Cancel
           </button>
@@ -758,24 +1310,46 @@ const EditProduct = () => {
             onClick={handleSubmit}
             disabled={submitting}
             style={{
-              padding: "9px 26px", border: "none", borderRadius: 8,
-              background: submitting ? "#555" : "#1a1a1a", color: "#fff",
-              fontSize: 15, fontWeight: 600,
+              padding: "9px 26px",
+              border: "none",
+              borderRadius: 8,
+              background: submitting ? "#555" : "#1a1a1a",
+              color: "#fff",
+              fontSize: 15,
+              fontWeight: 600,
               cursor: submitting ? "not-allowed" : "pointer",
-              fontFamily: "inherit", transition: "background .15s",
-              display: "flex", alignItems: "center", gap: 8,
+              fontFamily: "inherit",
+              transition: "background .15s",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
             }}
-            onMouseEnter={(e) => { if (!submitting) e.currentTarget.style.background = "#333"; }}
-            onMouseLeave={(e) => { if (!submitting) e.currentTarget.style.background = "#1a1a1a"; }}
+            onMouseEnter={(e) => {
+              if (!submitting) e.currentTarget.style.background = "#333";
+            }}
+            onMouseLeave={(e) => {
+              if (!submitting) e.currentTarget.style.background = "#1a1a1a";
+            }}
           >
             {submitting ? (
               <>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 1s linear infinite" }}>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  style={{ animation: "spin 1s linear infinite" }}
+                >
                   <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
                 Updating…
               </>
-            ) : "Update Product"}
+            ) : (
+              "Update Product"
+            )}
           </button>
         </div>
       </div>

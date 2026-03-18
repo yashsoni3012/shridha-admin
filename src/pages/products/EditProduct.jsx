@@ -104,24 +104,15 @@ const EditProduct = () => {
     fetchCategories();
   }, []);
 
-  const parseCommaString = (str) => {
-    if (!str) return [];
-    const parseCommaString = (data) => {
-      if (!data) return [];
-      if (Array.isArray(data)) return data;
-      if (typeof data === "string") {
-        return data
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-      }
-      return [];
-    };
-    if (typeof str === "string")
-      return str
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => s !== "");
+  // Fixed: handle both array and comma-separated string
+  const parseCommaString = (data) => {
+    if (!data) return [];
+    if (Array.isArray(data)) {
+      return data.map(item => item.trim()).filter(Boolean);
+    }
+    if (typeof data === "string") {
+      return data.split(",").map(s => s.trim()).filter(Boolean);
+    }
     return [];
   };
 
@@ -324,7 +315,7 @@ const EditProduct = () => {
 
   const sizesChanged = () => {
     if (!original) return false;
-    return !arraysEqual(selectedSizes, parseCommaString(original.sizes));
+    return !arraysEqual(selectedSizes, parseCommaString(original.sizes).map(s => s.toUpperCase()));
   };
 
   const handleSubmit = async (e) => {
@@ -365,7 +356,7 @@ const EditProduct = () => {
       );
     }
 
-    // Sizes: send as a single comma-separated string in lowercase (same as AddProduct)
+    // Sizes: send as a single comma-separated string in lowercase
     if (sizesChanged()) {
       submitData.append(
         "sizes",

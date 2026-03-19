@@ -29,7 +29,7 @@ const LogoutModal = ({ isOpen, onConfirm, onCancel }) => {
 
       {/* Modal Card */}
       <div
-        className="relative z-10 w-[100%] max-w-sm rounded-2xl border border-gray-700/60 bg-[#161616] shadow-2xl p-6"
+        className="relative z-10 w-[90%] max-w-sm rounded-2xl border border-gray-700/60 bg-[#161616] shadow-2xl p-6"
         style={{ animation: "slideUp 0.2s ease" }}
       >
         {/* Close button */}
